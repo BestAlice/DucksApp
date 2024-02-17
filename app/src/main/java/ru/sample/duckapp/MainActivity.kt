@@ -15,8 +15,6 @@ import retrofit2.Callback
 import retrofit2.Response
 import ru.sample.duckapp.domain.Duck
 import ru.sample.duckapp.infra.Api
-import java.io.File
-import java.io.FileOutputStream
 
 
 class MainActivity : AppCompatActivity() {
@@ -33,19 +31,23 @@ class MainActivity : AppCompatActivity() {
         findViewById<Button>(R.id.button)
             .setOnClickListener {
                 clearError()
-                var fieldText = findViewById<EditText>(R.id.duckId).text;
-                if (fieldText.toString().equals("")){
-                    makeRequest()
-                } else {
-                    var id: Int = Integer.parseInt(fieldText.toString())
-                    makeRequest(id)
-                }
+
+                Thread {
+                    var fieldText = findViewById<EditText>(R.id.duckId).text;
+                    if (fieldText.toString().equals("")){
+                        makeRequest()
+                    } else {
+                        var id: Int = Integer.parseInt(fieldText.toString())
+                        makeRequest(id)
+                    }
+                }.start()
+
+
 
             }
-
     }
 
-    fun makeRequest(){
+    fun makeRequest() {
         Api.ducksApi.getRandomDuck().enqueue(object : Callback<Duck> {
 
             override fun onResponse(call: Call<Duck>, response: Response<Duck>) {
